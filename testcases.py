@@ -1,7 +1,7 @@
 """
 Test cases for the Throbac to C transpiler
 
-Author: TODO: your names here
+Author: Brooks and Macdonald
 """
 
 import unittest
@@ -51,10 +51,24 @@ TEST_CASES = [
     (r'"YO\nYOYO\n\n"', '^YO+YOYO++^', 'expr'),  # Note the use of raw string to permit \n
                                                  # alternative would have been '"YO\\nYOYO\\n\\n"'
     # booleans
+    ('true', 'VERUM', 'expr'),
+    ('false', 'FALSUM', 'expr'),
+
     # variables
+    ('count', 'count','expr'),
+    ('message', 'message','expr'),
+
     # parentheses
+    ('55', '( .V.V. )', 'expr'),
+    ('45', '( .IV.V. )', 'expr'),
+
     # compare
+    ('7>55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'), #TODO spacing handling
+
     # concatenation
+    ('strcat("ABC","EFG");', "^ABC^ IUNGO ^EFG^", 'expr'),
+    ('strcat("ABC!","EFG");', "^ABC!^ IUNGO ^EFG^", 'expr')
+
     # add and subtract
     # multiply and divide
     # negation

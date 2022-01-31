@@ -3,11 +3,12 @@ When as a parse tree Listener on a valid Throbac parse tree, creates a
 translation to C and stores this as a string attribute `c` on the root of
 the tree, which is the `ScriptContext` node.
 
-Author: TODO: your names here
+Author: Brooks and Macdonald
 """
 
 from throbac.ThrobacListener import ThrobacListener
 from throbac.ThrobacParser import ThrobacParser
+
 
 DIGIT_MAP = {'NIL': '0', 'I': '1', 'II': '2', 'III': '3', 'IV': '4',
              'V': '5', 'VI': '6', 'VII': '7', 'VIII': '8', 'IX': '9'}
@@ -95,22 +96,42 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitParens(self, ctx: ThrobacParser.ParensContext):
-        pass
+        ctx.c = ctx.expr().c
+
 
     def exitNegation(self, ctx: ThrobacParser.NegationContext):
         pass
 
     def exitCompare(self, ctx: ThrobacParser.CompareContext):
-        pass
+        throbac_compare = ctx.op.text
+
+        compare_mapping = {
+            'IDEM': '==',
+            'NI.IDEM': '!=',
+            'INFRA':  '<',
+            'INFRA.IDEM': '<=',
+            'SUPRA': '>',
+            'SUPRA.IDEM': '>='
+        }
+
+        ctx.c = ctx.expr(0).c + compare_mapping[throbac_compare] + ctx.expr(1).c
 
     def exitConcatenation(self, ctx: ThrobacParser.ConcatenationContext):
-        pass
+
+        ctx.c = 'strcat(' + ctx.expr(0).c + ',' + ctx.expr(1).c + ');'
 
     def exitBool(self, ctx: ThrobacParser.BoolContext):
-        pass
+        throbac_bool = ctx.getText()
+        if throbac_bool == 'VERUM':
+            string = 'true'
+        elif throbac_bool == 'FALSUM':
+            string = 'false'
+
+        ctx.c = string
 
     def exitVariable(self, ctx: ThrobacParser.VariableContext):
-        pass
+        throbac_var = ctx.getText()
+        ctx.c = throbac_var
 
     def exitAddSub(self, ctx: ThrobacParser.AddSubContext):
         pass
