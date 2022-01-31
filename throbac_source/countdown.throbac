@@ -1,0 +1,26 @@
+// Author: Greg Phillips
+// Version: 2021-01-24
+
+APUD start : NUMERUS, message : LOCUTIO DEFINITIO countdown >
+    current : NUMERUS MUTABILIS
+    current start VALORUM
+    current SUPRA .NIL. DUM >
+        current APUD current VOCO displayanddecrement VALORUM
+    <
+    message IUNGO ^+^ LOCUTIO.IMPRIMO
+<
+
+APUD count : NUMERUS DEFINITIO displayanddecrement PRAEBET NUMERUS >
+    count NUMERUS.IMPRIMO
+    count count SUBTRAHO .I. VALORUM
+    count IDEM .III. SI >
+        ^GET.READY+^ LOCUTIO.IMPRIMO
+    < ALUID >
+        ^+^ LOCUTIO.IMPRIMO
+    <
+    count REDEO
+<
+
+announce : LOCUTIO MUTABILIS
+announce ^LIFTOFF^ VALORUM
+APUD .I.NIL., announce VOCO countdown
