@@ -63,16 +63,30 @@ TEST_CASES = [
     ('45', '( .IV.V. )', 'expr'),
 
     # compare
-    ('7>55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'), #TODO spacing handling
+    ('7>55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'), #TODO spacing handling?
 
     # concatenation
     ('strcat("ABC","EFG");', "^ABC^ IUNGO ^EFG^", 'expr'),
-    ('strcat("ABC!","EFG");', "^ABC!^ IUNGO ^EFG^", 'expr')
+    ('strcat("SENATUS","POPULUM");', "^SENATUS^ IUNGO ^POPULUM^", 'expr'),
 
     # add and subtract
+    ('1+2', '.I. ADDO .II.', 'expr'), #should there be a comma at the end?
+    ('55-45', '( .V.V. ) SUBTRAHO (.IV.V. )', 'expr'),
+
     # multiply and divide
+    ('1*2', '.I. CONGERO .II.', 'expr'), #should there be a comma at the end? also add more test cases
+    ('55/45', '( .V.V. ) PARTIO (.IV.V. )', 'expr'),
+
     # negation
+    ('!true', 'NI VERUM', 'expr'),
+    ('!1<2', ' NI .I. INFRA .II.', 'expr'), #paretheses around 1<2 breaks it
+    ('!!false', ' NI NI FALSUM', 'expr'),
+    ('-55', 'NEGANS .V.V.', 'expr'),
+    ('55', 'NEGANS NEGANS .V.V.', 'expr'),
+
     # function call
+    ("frobincate(2, false);", 'APUD .II., FALSUM VOCO frobincate', 'funcCall'),
+
     # function call expression
     # function call statement
     # assignment

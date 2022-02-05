@@ -100,7 +100,14 @@ class Throbac2CTranslator(ThrobacListener):
 
 
     def exitNegation(self, ctx: ThrobacParser.NegationContext):
-        pass
+        throbac_negation = ctx.getText()
+
+        if 'NI' in throbac_negation:
+            ctx.c = '!' + ctx.expr().c #boolean negation
+
+        elif 'NEGANS' in throbac_negation:
+            value = 0 - int(ctx.expr().c) #arithmetic negation
+            ctx.c = str(value)
 
     def exitCompare(self, ctx: ThrobacParser.CompareContext):
         throbac_compare = ctx.op.text
@@ -134,13 +141,41 @@ class Throbac2CTranslator(ThrobacListener):
         ctx.c = throbac_var
 
     def exitAddSub(self, ctx: ThrobacParser.AddSubContext):
-        pass
+        equation = ctx.getText();
+
+        if "ADDO" in equation:
+            ctx.c = ctx.expr(0).c + '+' + ctx.expr(1).c #+ ';' #should there be a comma at the end?
+
+        elif "SUBTRAHO" in equation:
+            ctx.c = ctx.expr(0).c + '-' + ctx.expr(1).c #+ ';' #should there be a comma at the end?
+
 
     def exitFuncCallExpr(self, ctx: ThrobacParser.FuncCallExprContext):
         pass
 
     def exitMulDiv(self, ctx: ThrobacParser.MulDivContext):
-        pass
+        equation = ctx.getText()
+
+        if "CONGERO" in equation:
+            ctx.c = ctx.expr(0).c + '*' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
+
+        elif "PARTIO" in equation:
+            ctx.c = ctx.expr(0).c + '/' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
 
     def exitFuncCall(self, ctx: ThrobacParser.FuncCallContext):
-        pass
+        func = ctx.getText()
+        parameters = []
+        num_para = 0 #number of parameters
+        func = func.split('VOCO').pop() #get function name
+
+        while ctx.expr(num_para): #get parameters
+            parameters.append(ctx.expr(num_para).c)
+            num_para = num_para+1
+
+        ctx.c = func + '('
+        for para in parameters: #make function call
+            ctx.c = ctx.c + para
+            num_para = num_para - 1
+            if num_para:
+                ctx.c = ctx.c + ', '
+        ctx.c = ctx.c + ');'
