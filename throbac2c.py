@@ -77,8 +77,6 @@ class Throbac2CTranslator(ThrobacListener):
         string = '\n'.join([str(statements) for statements in string])
         ctx.c = string
 
-
-
     def exitAssignment(self, ctx: ThrobacParser.AssignmentContext):
         testtext = ctx.getText()
         # print(testtext)
@@ -88,10 +86,10 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitWhile(self, ctx: ThrobacParser.WhileContext):
-        pass
+        ctx.c = 'while(' + ctx.expr().c + '){\n' + ctx.block().c + '\n}'
 
     def exitIf(self, ctx: ThrobacParser.IfContext):
-        pass
+        ctx.c = 'if(' + ctx.expr().c + '){\n' + ctx.block(0).c + '\n}'
 
     def exitPrintNumber(self, ctx: ThrobacParser.PrintNumberContext):
         testtext = ctx.getText()
