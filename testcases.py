@@ -74,12 +74,12 @@ TEST_CASES = [
     ('(55)-(45)', '( .V.V. ) SUBTRAHO (.IV.V. )', 'expr'),
 
     # multiply and divide
-    ('1*2', '.I. CONGERO .II.', 'expr'),  # should there be a comma at the end? also add more test cases
+    ('1*2', '.I. CONGERO .II.', 'expr'),
     ('(55)/(45)', '( .V.V. ) PARTIO (.IV.V. )', 'expr'),
 
     # negation
     ('!true', 'NI VERUM', 'expr'),
-    ('!1<2', ' NI .I. INFRA .II.', 'expr'),  # paretheses around 1<2 breaks it
+    ('!1<2', ' NI .I. INFRA .II.', 'expr'),
     ('!!false', ' NI NI FALSUM', 'expr'),
     ('-55', 'NEGANS .V.V.', 'expr'),
     ('55', 'NEGANS NEGANS .V.V.', 'expr'),
@@ -97,14 +97,19 @@ TEST_CASES = [
     ('return;', 'REDEO', 'statement'),
     ('return apple;', 'apple REDEO', 'statement'),
     # print int
-    ('print(%d,1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement"),
-    ('print(1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement")
+    ('printf("%i",1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement"),
+    ('printf("%i",num);', "num NUMERUS.IMPRIMO", "statement"),
     # print string
+    ('printf("%s",string);', "string LOCUTIO.IMPRIMO", "statement"),
+
     # print bool
+    ('printf("%B",bool);', "bool VERITAS.IMPRIMO", "statement"),
+    ('printf("%B",(1<2));', "(.I. INFRA .II.) VERITAS.IMPRIMO", "statement"),
+    ('printf("%B",true);', "VERUM VERITAS.IMPRIMO", "statement"),
     # block
     # while
     # if
-    # nameDef Grant started
+    # nameDef
     # varDec
     # varBlock
     # body

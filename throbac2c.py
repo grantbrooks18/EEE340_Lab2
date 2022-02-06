@@ -90,13 +90,15 @@ class Throbac2CTranslator(ThrobacListener):
         testtext = ctx.getText()
         if "NUMERUS" in testtext:
             testtext = testtext.split()
-            ctx.c = "printf(%d, " + ctx.expr().c + ");"
+            ctx.c = 'printf("%i",' + ctx.expr().c + ");"
 
     def exitPrintString(self, ctx: ThrobacParser.PrintStringContext):
-        pass
+        var_name = ctx.expr().c
+        ctx.c = 'printf("%s",'+var_name+');'
 
     def exitPrintBool(self, ctx: ThrobacParser.PrintBoolContext):
-        pass
+        expr = ctx.expr().c
+        ctx.c = 'printf("%B",' + expr + ');'
 
     # Not easy
     # We need to be able to generate code that inspects the value of the inspection at runtime to evaluate and
