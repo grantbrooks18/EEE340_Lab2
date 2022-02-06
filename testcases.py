@@ -101,7 +101,6 @@ TEST_CASES = [
     ('printf("%i",num);', "num NUMERUS.IMPRIMO", "statement"),
     # print string
     ('printf("%s",string);', "string LOCUTIO.IMPRIMO", "statement"),
-
     # print bool
     ('printf("%B",bool);', "bool VERITAS.IMPRIMO", "statement"),
     ('printf("%B",(1<2));', "(.I. INFRA .II.) VERITAS.IMPRIMO", "statement"),
@@ -113,8 +112,10 @@ TEST_CASES = [
     ('while(true){\nprintf("%s",string);\n}', 'VERUM DUM > string LOCUTIO.IMPRIMO <', 'statement'),
     ('while(1<2){\nwhile(true){\nprintf("%s",string);\n}\n}', '.I. INFRA .II. DUM > VERUM DUM >string LOCUTIO.IMPRIMO< <', 'statement'),
     # if
-    ('if(var<2){\nfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement')
+    ('if(var<2){\nfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement'),
+    ('if(boolean!=true){\nreturn false;\n}else{\nreturn true;\n}', 'boolean NI.IDEM VERUM SI > FALSUM REDEO< ALUID > VERUM REDEO <', 'statement')
     # nameDef
+
     # varDec
     # varBlock
     # body

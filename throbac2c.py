@@ -89,7 +89,10 @@ class Throbac2CTranslator(ThrobacListener):
         ctx.c = 'while(' + ctx.expr().c + '){\n' + ctx.block().c + '\n}'
 
     def exitIf(self, ctx: ThrobacParser.IfContext):
+        text = ctx.getText()
         ctx.c = 'if(' + ctx.expr().c + '){\n' + ctx.block(0).c + '\n}'
+        if 'ALUID' in text:
+            ctx.c = ctx.c + 'else{\n' + ctx.block(1).c + '\n}'
 
     def exitPrintNumber(self, ctx: ThrobacParser.PrintNumberContext):
         testtext = ctx.getText()
