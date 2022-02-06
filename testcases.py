@@ -97,6 +97,7 @@ TEST_CASES = [
     ('return;', 'REDEO', 'statement'),
     ('return apple;', 'apple REDEO', 'statement'),
     # print int
+    ('print(%d,1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement"),
     ('print(1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement")
     # print string
     # print bool

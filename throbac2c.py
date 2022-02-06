@@ -90,7 +90,7 @@ class Throbac2CTranslator(ThrobacListener):
         testtext = ctx.getText()
         if "NUMERUS" in testtext:
             testtext = testtext.split()
-            ctx.c = "print(" + ctx.expr().c + ");"
+            ctx.c = "printf(%d, " + ctx.expr().c + ");"
 
     def exitPrintString(self, ctx: ThrobacParser.PrintStringContext):
         pass
