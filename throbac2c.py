@@ -3,6 +3,7 @@ When as a parse tree Listener on a valid Throbac parse tree, creates a
 translation to C and stores this as a string attribute `c` on the root of
 the tree, which is the `ScriptContext` node.
 
+Author: Connor MacDonald; Grant Brooks
 Author: Brooks and Macdonald
 """
 
@@ -89,6 +90,10 @@ class Throbac2CTranslator(ThrobacListener):
     def exitPrintBool(self, ctx: ThrobacParser.PrintBoolContext):
         pass
 
+    # Not easy
+    # We need to be able to generate code that inspects the value of the inspection at runtime to evaluate and
+    # Prints the right thing.
+
     def exitReturn(self, ctx: ThrobacParser.ReturnContext):
         pass
 
@@ -96,7 +101,7 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitParens(self, ctx: ThrobacParser.ParensContext):
-        ctx.c = ctx.expr().c
+        ctx.c = '(' + ctx.expr().c + ')'
 
 
     def exitNegation(self, ctx: ThrobacParser.NegationContext):
@@ -149,9 +154,10 @@ class Throbac2CTranslator(ThrobacListener):
         elif "SUBTRAHO" in equation:
             ctx.c = ctx.expr(0).c + '-' + ctx.expr(1).c #+ ';' #should there be a comma at the end?
 
-
     def exitFuncCallExpr(self, ctx: ThrobacParser.FuncCallExprContext):
-        pass
+        ctx.c = ctx.children[0].c
+        # ctx.c = ctx.expr(0).c
+        # This second version doesn't work, but we're not sure why.
 
     def exitMulDiv(self, ctx: ThrobacParser.MulDivContext):
         equation = ctx.getText()
