@@ -61,7 +61,15 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitVarDec(self, ctx: ThrobacParser.VarDecContext):
-        pass
+        testtext = ctx.children[0].c
+        if "int" in testtext:
+            ctx.c = testtext + ' = 0;'
+
+        elif "bool" in testtext:
+            ctx.c = testtext + ' = false;'
+
+        elif "char*" in testtext:
+            ctx.c = testtext + ' = NULL;'
 
     def exitNameDef(self, ctx: ThrobacParser.NameDefContext):
         testtext = ctx.getText();
@@ -75,12 +83,17 @@ class Throbac2CTranslator(ThrobacListener):
             ctx.c = "char* "
 
         testtext = testtext.split(":", 1)  # Isolate the ID
-        ctx.c = ctx.c + testtext[0] + ";"
+        ctx.c = ctx.c + testtext[0]
 
         pass
 
     def exitVarBlock(self, ctx: ThrobacParser.VarBlockContext):
-        pass
+        tempstring = ""
+
+        for child in ctx.children:
+            tempstring = tempstring + child.c + "\n"
+
+        ctx.c = tempstring
 
     def exitBlock(self, ctx: ThrobacParser.BlockContext):
         string = []

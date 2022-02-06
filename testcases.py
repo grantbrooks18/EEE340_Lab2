@@ -117,12 +117,21 @@ TEST_CASES = [
     ('if(boolean!=true){\nreturn false;\n}else{\nreturn true;\n}',
      'boolean NI.IDEM VERUM SI > FALSUM REDEO< ALUID > VERUM REDEO <', 'statement'),
     # nameDef
-    ('int apple;', 'apple : NUMERUS', 'nameDef'),
-    ('bool pear;', 'pear : VERITAS ', 'nameDef'),
-    ('char* peach;', 'peach : LOCUTIO  ', 'nameDef')
+    ('int apple', 'apple : NUMERUS', 'nameDef'),
+    ('bool pear', 'pear : VERITAS ', 'nameDef'),
+    ('char* peach', 'peach : LOCUTIO  ', 'nameDef'),
     # varDec
+    ('int apple = 0;', 'apple : NUMERUS MUTABILIS', 'varDec'),
+    ('bool pear = false;', 'pear : VERITAS MUTABILIS', 'varDec'),
+    ('char* peach = NULL;', 'peach : LOCUTIO  MUTABILIS', 'varDec'),
     # varBlock
+    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n',
+     'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS,'
+     , 'varBlock'),
     # body
+    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n',
+     'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS,'
+     , 'varBlock')
     # main
     # funcdef
     # script
