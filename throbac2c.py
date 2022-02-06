@@ -65,9 +65,11 @@ class Throbac2CTranslator(ThrobacListener):
 
     def exitNameDef(self, ctx: ThrobacParser.NameDefContext):
         testtext = ctx.getText();
-        phil = ""
         if "NUMERUS" in testtext:
             ctx.c = "int "
+
+        elif "VERITAS" in testtext:
+            ctx.c = "bool "
 
         testtext = testtext.split(":", 1)  # Isolate the ID
         ctx.c = ctx.c + testtext[0] + ";"

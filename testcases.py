@@ -118,7 +118,7 @@ TEST_CASES = [
      'boolean NI.IDEM VERUM SI > FALSUM REDEO< ALUID > VERUM REDEO <', 'statement'),
     # nameDef
     ('int apple;', 'apple : NUMERUS', 'nameDef'),
-    # ('bool pear;', 'pear : VERITAS ', 'nameDef'),
+    ('bool pear;', 'pear : VERITAS ', 'nameDef'),
     # ('char* peach;', 'peache : LOCUTIO  ', 'nameDef')
     # varDec
     # varBlock
