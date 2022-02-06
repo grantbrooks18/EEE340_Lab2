@@ -129,10 +129,18 @@ TEST_CASES = [
      'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS,'
      , 'varBlock'),
     # body
-    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n',
-     'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS,'
-     , 'varBlock')
+    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n\n'  # VarBlock
+     'printf("%s",string);\nprintf("%B",bool);\n',  # block
+     'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS'
+     "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO",
+     'body'),
+
     # main
+    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n\n'  # VarBlock
+     'printf("%s",string);\nprintf("%B",bool);\n',  # block
+     'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS'
+     "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO",
+     'body')
     # funcdef
     # script
 ]

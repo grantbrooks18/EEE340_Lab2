@@ -55,9 +55,16 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitMain(self, ctx: ThrobacParser.MainContext):
-        pass
+        ctx.c = ctx.expr().c
 
     def exitBody(self, ctx: ThrobacParser.BodyContext):
+        tempstring = ""
+
+        for child in ctx.children:
+            tempstring = tempstring + child.c + "\n"
+
+        ctx.c = tempstring
+
         pass
 
     def exitVarDec(self, ctx: ThrobacParser.VarDecContext):
