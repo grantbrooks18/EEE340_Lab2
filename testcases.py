@@ -95,14 +95,15 @@ TEST_CASES = [
     ('apple = "ORANGE";', "apple ^ORANGE^ VALORUM", 'statement'),
     # return
     ('return;', 'REDEO', 'statement'),
-    ('return apple;', 'apple REDEO', 'statement')
+    ('return apple;', 'apple REDEO', 'statement'),
     # print int
+    ('print(1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement")
     # print string
     # print bool
     # block
     # while
     # if
-    # nameDef
+    # nameDef Grant started
     # varDec
     # varBlock
     # body

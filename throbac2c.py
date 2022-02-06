@@ -87,7 +87,10 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitPrintNumber(self, ctx: ThrobacParser.PrintNumberContext):
-        pass
+        testtext = ctx.getText()
+        if "NUMERUS" in testtext:
+            testtext = testtext.split()
+            ctx.c = "print(" + ctx.expr().c + ");"
 
     def exitPrintString(self, ctx: ThrobacParser.PrintStringContext):
         pass
