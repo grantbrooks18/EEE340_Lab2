@@ -70,7 +70,14 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitBlock(self, ctx: ThrobacParser.BlockContext):
-        pass
+        string = []
+        for statements in ctx.statement():
+            string.append(statements.c)
+
+        string = '\n'.join([str(statements) for statements in string])
+        ctx.c = string
+
+
 
     def exitAssignment(self, ctx: ThrobacParser.AssignmentContext):
         testtext = ctx.getText()

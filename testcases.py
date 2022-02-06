@@ -107,6 +107,8 @@ TEST_CASES = [
     ('printf("%B",(1<2));', "(.I. INFRA .II.) VERITAS.IMPRIMO", "statement"),
     ('printf("%B",true);', "VERUM VERITAS.IMPRIMO", "statement"),
     # block
+    ('printf("%s",string);\nprintf("%B",bool);', "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO", "block"),
+
     # while
     # if
     # nameDef
