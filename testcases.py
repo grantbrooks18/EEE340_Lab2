@@ -92,8 +92,10 @@ TEST_CASES = [
     # function call statement
     ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'statement'),
     # assignment
-    ('apple = "ORANGE";', "apple ^ORANGE^ VALORUM", 'statement')
+    ('apple = "ORANGE";', "apple ^ORANGE^ VALORUM", 'statement'),
     # return
+    ('return;', 'REDEO', 'statement'),
+    ('return apple;', 'apple REDEO', 'statement')
     # print int
     # print string
     # print bool

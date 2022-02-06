@@ -100,14 +100,18 @@ class Throbac2CTranslator(ThrobacListener):
     # Prints the right thing.
 
     def exitReturn(self, ctx: ThrobacParser.ReturnContext):
-        pass
+        text = ctx.getText()
+        if text == 'REDEO':
+            ctx.c = "return;"
+
+        else:
+            ctx.c = "return " + ctx.expr().c + ";"
 
     def exitFuncCallStmt(self, ctx: ThrobacParser.FuncCallStmtContext):
         ctx.c = ctx.children[0].c
 
     def exitParens(self, ctx: ThrobacParser.ParensContext):
         ctx.c = '(' + ctx.expr().c + ')'
-
 
     def exitNegation(self, ctx: ThrobacParser.NegationContext):
         throbac_negation = ctx.getText()
