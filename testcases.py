@@ -119,7 +119,7 @@ TEST_CASES = [
     # nameDef
     ('int apple;', 'apple : NUMERUS', 'nameDef'),
     ('bool pear;', 'pear : VERITAS ', 'nameDef'),
-    # ('char* peach;', 'peache : LOCUTIO  ', 'nameDef')
+    ('char* peach;', 'peach : LOCUTIO  ', 'nameDef')
     # varDec
     # varBlock
     # body

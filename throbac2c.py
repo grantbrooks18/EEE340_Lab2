@@ -71,6 +71,9 @@ class Throbac2CTranslator(ThrobacListener):
         elif "VERITAS" in testtext:
             ctx.c = "bool "
 
+        elif "LOCUTIO" in testtext:
+            ctx.c = "char* "
+
         testtext = testtext.split(":", 1)  # Isolate the ID
         ctx.c = ctx.c + testtext[0] + ";"
 
