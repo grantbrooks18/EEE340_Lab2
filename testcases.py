@@ -63,7 +63,7 @@ TEST_CASES = [
     ('(45)', '( .IV.V. )', 'expr'),
 
     # compare
-    ('7>55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'),  # TOD spacing handling?
+    ('7>55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'),  # TOD0 spacing handling?
 
     # concatenation
     ('strcat("ABC","EFG");', "^ABC^ IUNGO ^EFG^", 'expr'),
@@ -88,10 +88,11 @@ TEST_CASES = [
     ("frobincate(2, false);", 'APUD .II., FALSUM VOCO frobincate', 'funcCall'),
 
     # function call expression
-    ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'expr')
+    ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'expr'),
     # function call statement
-
+    ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'statement')
     # assignment
+    
     # return
     # print int
     # print string

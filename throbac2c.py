@@ -98,7 +98,7 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitFuncCallStmt(self, ctx: ThrobacParser.FuncCallStmtContext):
-        pass
+        ctx.c = ctx.children[0].c
 
     def exitParens(self, ctx: ThrobacParser.ParensContext):
         ctx.c = '(' + ctx.expr().c + ')'
