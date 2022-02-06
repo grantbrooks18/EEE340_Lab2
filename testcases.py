@@ -90,9 +90,9 @@ TEST_CASES = [
     # function call expression
     ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'expr'),
     # function call statement
-    ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'statement')
+    ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'statement'),
     # assignment
-    
+    ('apple = "ORANGE";', "apple ^ORANGE^ VALORUM", 'statement')
     # return
     # print int
     # print string

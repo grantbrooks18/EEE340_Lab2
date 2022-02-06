@@ -73,6 +73,11 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitAssignment(self, ctx: ThrobacParser.AssignmentContext):
+        testtext = ctx.getText()
+        # print(testtext)
+        testtext = testtext.split("^", 1)
+        # print(testtext[0])
+        ctx.c = testtext[0] + ' = ' + ctx.expr().c + ';'
         pass
 
     def exitWhile(self, ctx: ThrobacParser.WhileContext):
