@@ -110,12 +110,16 @@ TEST_CASES = [
     ('return;\nvar = "ROMAN";', "REDEO var ^ROMAN^ VALORUM", "block"),
     # while
     ('while(true){\nprintf("%s",string);\n}', 'VERUM DUM > string LOCUTIO.IMPRIMO <', 'statement'),
-    ('while(1<2){\nwhile(true){\nprintf("%s",string);\n}\n}', '.I. INFRA .II. DUM > VERUM DUM >string LOCUTIO.IMPRIMO< <', 'statement'),
+    ('while(1<2){\nwhile(true){\nprintf("%s",string);\n}\n}',
+     '.I. INFRA .II. DUM > VERUM DUM >string LOCUTIO.IMPRIMO< <', 'statement'),
     # if
     ('if(var<2){\nfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement'),
-    ('if(boolean!=true){\nreturn false;\n}else{\nreturn true;\n}', 'boolean NI.IDEM VERUM SI > FALSUM REDEO< ALUID > VERUM REDEO <', 'statement')
+    ('if(boolean!=true){\nreturn false;\n}else{\nreturn true;\n}',
+     'boolean NI.IDEM VERUM SI > FALSUM REDEO< ALUID > VERUM REDEO <', 'statement'),
     # nameDef
-
+    ('int apple;', 'apple : NUMERUS', 'nameDef'),
+    # ('bool pear;', 'pear : VERITAS ', 'nameDef'),
+    # ('char* peach;', 'peache : LOCUTIO  ', 'nameDef')
     # varDec
     # varBlock
     # body
