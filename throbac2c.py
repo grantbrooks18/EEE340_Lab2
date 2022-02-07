@@ -10,7 +10,6 @@ Author: Brooks and Macdonald
 from throbac.ThrobacListener import ThrobacListener
 from throbac.ThrobacParser import ThrobacParser
 
-
 DIGIT_MAP = {'NIL': '0', 'I': '1', 'II': '2', 'III': '3', 'IV': '4',
              'V': '5', 'VI': '6', 'VII': '7', 'VIII': '8', 'IX': '9'}
 
@@ -49,30 +48,35 @@ class Throbac2CTranslator(ThrobacListener):
     # --- TODO: yours to provide (not in this order - see `testcases.py`)
 
     def exitScript(self, ctx: ThrobacParser.ScriptContext):
-        tempstring = '#include <stdio.h>\n#include <stdbool.h>\n#include "throbac.h"\n'
+        tempstring = '#include <stdio.h>\n#include <stdbool.h>\n#include "throbac.h"\n\n'
+        for functions in ctx.funcDef():
+            tempstring += functions.header + "\n\n"
+
+        tempstring += ctx.main().c
+
         for functions in ctx.funcDef():
             tempstring += functions.c + "\n"
-
-        tempstring += ctx.main()
 
         ctx.c = tempstring
         return
 
     def exitFuncDef(self, ctx: ThrobacParser.FuncDefContext):
         tempstring = ""
-        functype = ctx.TYPE().symbol.text
-        # Add leading variable
-        if "NUMERUS" in functype:
-            tempstring += "int "
-
-        elif "VERITAS" in functype:
-            tempstring += "bool "
-
-        elif "LOCUTIO" in functype:
-            tempstring += "char* "
+        functype = ctx.TYPE()
+        if functype == None:
+            tempstring += "void "
 
         else:
-            tempstring += "void "
+            functype = ctx.TYPE().symbol.text
+            # Add leading variable
+            if "NUMERUS" in functype:
+                tempstring += "int "
+
+            elif "VERITAS" in functype:
+                tempstring += "bool "
+
+            elif "LOCUTIO" in functype:
+                tempstring += "char* "
 
         tempstring += ctx.ID().symbol.text + "("  # Add the function Name
         temptemp = []
@@ -84,12 +88,15 @@ class Throbac2CTranslator(ThrobacListener):
 
         ctx.header = tempstring + ";"
 
-        tempstring += " {" + ctx.body().c + "}"
+        tempstring += " {\n" + ctx.body().c + "}"
 
         ctx.c = tempstring
 
     def exitMain(self, ctx: ThrobacParser.MainContext):
-        ctx.c = ctx.expr().c
+        tempstring = 'int main() {\n'
+        tempstring += ctx.body().c
+        tempstring += 'return 0;\n}\n\n'
+        ctx.c = tempstring
 
     def exitBody(self, ctx: ThrobacParser.BodyContext):
         tempstring = ""
@@ -100,7 +107,7 @@ class Throbac2CTranslator(ThrobacListener):
         ctx.c = tempstring
 
     def exitVarDec(self, ctx: ThrobacParser.VarDecContext):
-        testtext = ctx.nameDef().c  #This
+        testtext = ctx.nameDef().c  # This
         if "int" in testtext:
             ctx.c = testtext + ' = 0;'
 
@@ -128,10 +135,13 @@ class Throbac2CTranslator(ThrobacListener):
 
     def exitVarBlock(self, ctx: ThrobacParser.VarBlockContext):
         tempstring = ""
-
+        temptemp = []
         for var in ctx.varDec():  # This handles one or more children
-            tempstring = tempstring + var.c + "\n"
+            temptemp.append(var.c)
+            # tempstring = tempstring + var.c + "\n"
 
+        string = '\n'.join([str(statements) for statements in temptemp])
+        tempstring += string
         ctx.c = tempstring
 
     def exitBlock(self, ctx: ThrobacParser.BlockContext):
@@ -143,11 +153,13 @@ class Throbac2CTranslator(ThrobacListener):
         ctx.c = string
 
     def exitAssignment(self, ctx: ThrobacParser.AssignmentContext):
-        ctx.c = ctx.ID().symbol.text + ' = ' + ctx.expr().c + ';'
-        pass
+        ctx.c = ctx.ID().symbol.text + ' = ' + ctx.expr().c
+
+        if ";" not in ctx.c:
+            ctx.c += ';'
 
     def exitWhile(self, ctx: ThrobacParser.WhileContext):
-        ctx.c = 'while(' + ctx.expr().c + '){\n' + ctx.block().c + '\n}'
+        ctx.c = 'while (' + ctx.expr().c + ') {\n' + ctx.block().c + '\n}'
 
     def exitIf(self, ctx: ThrobacParser.IfContext):
         text = ctx.getText()
@@ -163,9 +175,6 @@ class Throbac2CTranslator(ThrobacListener):
 
     def exitPrintString(self, ctx: ThrobacParser.PrintStringContext):
         var_name = ctx.expr().c
-        # if var_name == '"\\n"':
-        #     ctx.c = r'printf("%s", "\n");'
-        # else:
         temp = 'printf("%s", ' + var_name + ');'
         ctx.c = temp
 
@@ -195,10 +204,10 @@ class Throbac2CTranslator(ThrobacListener):
         throbac_negation = ctx.getText()
 
         if 'NI' in throbac_negation:
-            ctx.c = '!' + ctx.expr().c #boolean negation
+            ctx.c = '!' + ctx.expr().c  # boolean negation
 
         elif 'NEGANS' in throbac_negation:
-            value = 0 - int(ctx.expr().c) #arithmetic negation
+            value = 0 - int(ctx.expr().c)  # arithmetic negation
             ctx.c = str(value)
 
     def exitCompare(self, ctx: ThrobacParser.CompareContext):
@@ -217,7 +226,7 @@ class Throbac2CTranslator(ThrobacListener):
 
     def exitConcatenation(self, ctx: ThrobacParser.ConcatenationContext):
 
-        ctx.c = 'strcat(' + ctx.expr(0).c + ',' + ctx.expr(1).c + ');'
+        ctx.c = '__throbac_cat(' + ctx.expr(0).c + ', ' + ctx.expr(1).c + ')'
 
     def exitBool(self, ctx: ThrobacParser.BoolContext):
         throbac_bool = ctx.getText()
@@ -236,10 +245,10 @@ class Throbac2CTranslator(ThrobacListener):
         equation = ctx.getText();
 
         if "ADDO" in equation:
-            ctx.c = ctx.expr(0).c + ' + ' + ctx.expr(1).c  #+ ';' #should there be a comma at the end?
+            ctx.c = ctx.expr(0).c + ' + ' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
 
         elif "SUBTRAHO" in equation:
-            ctx.c = ctx.expr(0).c + ' - ' + ctx.expr(1).c  #+ ';' #should there be a comma at the end?
+            ctx.c = ctx.expr(0).c + ' - ' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
 
     def exitFuncCallExpr(self, ctx: ThrobacParser.FuncCallExprContext):
         ctx.c = ctx.children[0].c
@@ -258,15 +267,15 @@ class Throbac2CTranslator(ThrobacListener):
     def exitFuncCall(self, ctx: ThrobacParser.FuncCallContext):
         func = ctx.getText()
         parameters = []
-        num_para = 0 #number of parameters
-        func = func.split('VOCO').pop() #get function name
+        num_para = 0  # number of parameters
+        func = func.split('VOCO').pop()  # get function name
 
-        while ctx.expr(num_para): #get parameters
+        while ctx.expr(num_para):  # get parameters
             parameters.append(ctx.expr(num_para).c)
-            num_para = num_para+1
+            num_para = num_para + 1
 
         ctx.c = func + '('
-        for para in parameters: #make function call
+        for para in parameters:  # make function call
             ctx.c = ctx.c + para
             num_para = num_para - 1
             if num_para:

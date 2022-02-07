@@ -66,8 +66,8 @@ TEST_CASES = [
     ('7 > 55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'),  # TOD0 spacing handling?
 
     # concatenation
-    ('strcat("ABC","EFG");', "^ABC^ IUNGO ^EFG^", 'expr'),
-    ('strcat("SENATUS","POPULUM");', "^SENATUS^ IUNGO ^POPULUM^", 'expr'),
+    ('__throbac_cat("ABC", "EFG")', "^ABC^ IUNGO ^EFG^", 'expr'),
+    ('__throbac_cat("SENATUS", "POPULUM")', "^SENATUS^ IUNGO ^POPULUM^", 'expr'),
 
     # add and subtract
     ('1 + 2', '.I. ADDO .II.', 'expr'),  # should there be a comma at the end?
@@ -111,8 +111,8 @@ TEST_CASES = [
     ('printf("%s", string);\nprintf("%B",bool);', "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO", "block"),
     ('return;\nvar = "ROMAN";', "REDEO var ^ROMAN^ VALORUM", "block"),
     # while
-    ('while(true){\nprintf("%s", string);\n}', 'VERUM DUM > string LOCUTIO.IMPRIMO <', 'statement'),
-    ('while(1 < 2){\nwhile(true){\nprintf("%s", string);\n}\n}',
+    ('while (true) {\nprintf("%s", string);\n}', 'VERUM DUM > string LOCUTIO.IMPRIMO <', 'statement'),
+    ('while (1 < 2) {\nwhile (true) {\nprintf("%s", string);\n}\n}',
      '.I. INFRA .II. DUM > VERUM DUM >string LOCUTIO.IMPRIMO< <', 'statement'),
     # if
     ('if (var < 2) {\nfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement'),
@@ -127,33 +127,35 @@ TEST_CASES = [
     ('bool pear = false;', 'pear : VERITAS MUTABILIS', 'varDec'),
     ('char* peach = NULL;', 'peach : LOCUTIO  MUTABILIS', 'varDec'),
     # varBlock
-    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n',
+    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;',
      'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS,'
      , 'varBlock'),
     # body
-    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n\n'  # VarBlock
+    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n'  # VarBlock
      'printf("%s", string);\nprintf("%B",bool);\n',  # block
      'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS'
      "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO",
      'body'),
 
     # main
-    ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n\n'  # VarBlock
-     'printf("%s", string);\nprintf("%B",bool);\n',  # block
+    ('int main() {\nint apple = 0;\nbool pear = false;\nchar* peach = NULL;\n'  # VarBlock
+     'printf("%s", string);\nprintf("%B",bool);\nreturn 0;\n}\n\n',  # block
      'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS'
      "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO",
-     'body'),
+     'main'),
+    ('int main() {\nchar* announce = NULL;\nannounce = "LIFTOFF";\nreturn 0;\n}\n\n',
+     'announce : LOCUTIO MUTABILIS\nannounce ^LIFTOFF^ VALORUM', 'main'),
     # funcdef
-    ('int displayanddecrement(int count) {\n'
+    ('int displayanddecrement(int count) {\n\n'
      'printf("%d", count);\n'
      'count = count - 1;\n'
      'if (count == 3) {\n'
      r'printf("%s", "\nGET.READY\n");'
      '\n} else {\n'
-     r'printf("%s",' + ' ' + r'"\n");'
-                             '\n}\n'
-                             'return count;\n'
-                             '}',
+     r'printf("%s", "\n");'
+     '\n}\n'
+     'return count;\n'
+     '}',
      'APUD count : NUMERUS DEFINITIO displayanddecrement PRAEBET NUMERUS >\n'
      'count NUMERUS.IMPRIMO\n'
      'count count SUBTRAHO .I. VALORUM\n'
@@ -164,9 +166,66 @@ TEST_CASES = [
      '<\n'
      'count REDEO\n'
      '<\n'
-     , "funcDef")
+     , "funcDef"),
     # script
-
+    ('#include <stdio.h>\n'
+     '#include <stdbool.h>\n'
+     '#include "throbac.h"\n'
+     '\n'
+     'void countdown(int start, char* message);\n'
+     '\n'
+     'int displayanddecrement(int count);\n'
+     '\n'
+     'int main() {\n'
+     'char* announce = NULL;\n'
+     'announce = "LIFTOFF";\n'
+     'countdown(10, announce);\n'
+     'return 0;\n'
+     '}\n'
+     '\n'
+     'void countdown(int start, char* message) {\n'
+     'int current = 0;\n'
+     'current = start;\n'
+     'while (current > 0) {\n'
+     'current = displayanddecrement(current);\n'
+     '}\n'
+     r'printf("%s", __throbac_cat(message, "\n"));'
+     '\n}'
+     '\n'
+     'int displayanddecrement(int count) {\n\n'
+     'printf("%d", count);\n'
+     'count = count - 1;\n'
+     'if (count == 3) {\n'
+     r'printf("%s", "\nGET.READY\n");'
+     '\n} else {\n'
+     r'printf("%s", "\n");'
+     '\n}\n'
+     'return count;\n'
+     '}\n',  # End of the C
+     'APUD start : NUMERUS, message : LOCUTIO DEFINITIO countdown >\n'
+     'current : NUMERUS MUTABILIS\n'
+     'current start VALORUM\n'
+     'current SUPRA .NIL. DUM >\n'
+     'current APUD current VOCO displayanddecrement VALORUM\n'
+     '<\n'
+     'message IUNGO ^+^ LOCUTIO.IMPRIMO\n'
+     '<\n'
+     '\n'
+     'APUD count : NUMERUS DEFINITIO displayanddecrement PRAEBET NUMERUS >\n'
+     'count NUMERUS.IMPRIMO\n'
+     'count count SUBTRAHO .I. VALORUM\n'
+     'count IDEM .III. SI >\n'
+     '^+GET.READY+^ LOCUTIO.IMPRIMO\n'
+     '< ALUID >\n'
+     '^+^ LOCUTIO.IMPRIMO\n'
+     '<\n'
+     'count REDEO\n'
+     '<\n'
+     '\n'
+     'announce : LOCUTIO MUTABILIS\n'
+     'announce ^LIFTOFF^ VALORUM\n'
+     'APUD .I.NIL., announce VOCO countdown\n',  # End of the Throbac
+     'script')
 ]
 
 
