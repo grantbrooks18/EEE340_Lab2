@@ -63,23 +63,23 @@ TEST_CASES = [
     ('(45)', '( .IV.V. )', 'expr'),
 
     # compare
-    ('7>55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'),  # TOD0 spacing handling?
+    ('7 > 55', ".NIL.NIL.VII. SUPRA .V.V.", 'expr'),  # TOD0 spacing handling?
 
     # concatenation
     ('strcat("ABC","EFG");', "^ABC^ IUNGO ^EFG^", 'expr'),
     ('strcat("SENATUS","POPULUM");', "^SENATUS^ IUNGO ^POPULUM^", 'expr'),
 
     # add and subtract
-    ('1+2', '.I. ADDO .II.', 'expr'),  # should there be a comma at the end?
-    ('(55)-(45)', '( .V.V. ) SUBTRAHO (.IV.V. )', 'expr'),
+    ('1 + 2', '.I. ADDO .II.', 'expr'),  # should there be a comma at the end?
+    ('(55) - (45)', '( .V.V. ) SUBTRAHO (.IV.V. )', 'expr'),
 
     # multiply and divide
-    ('1*2', '.I. CONGERO .II.', 'expr'),
-    ('(55)/(45)', '( .V.V. ) PARTIO (.IV.V. )', 'expr'),
+    ('1 * 2', '.I. CONGERO .II.', 'expr'),
+    ('(55) / (45)', '( .V.V. ) PARTIO (.IV.V. )', 'expr'),
 
     # negation
     ('!true', 'NI VERUM', 'expr'),
-    ('!1<2', ' NI .I. INFRA .II.', 'expr'),
+    ('!1 < 2', ' NI .I. INFRA .II.', 'expr'),
     ('!!false', ' NI NI FALSUM', 'expr'),
     ('-55', 'NEGANS .V.V.', 'expr'),
     ('55', 'NEGANS NEGANS .V.V.', 'expr'),
@@ -88,33 +88,35 @@ TEST_CASES = [
     ("frobincate(2, false);", 'APUD .II., FALSUM VOCO frobincate', 'funcCall'),
 
     # function call expression
-    ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'expr'),
+    ("frobincate(5 + 7, 6 * 2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'expr'),
     # function call statement
-    ("frobincate(5+7, 6*2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'statement'),
+    ("frobincate(5 + 7, 6 * 2);", 'APUD .V. ADDO .VII., .VI. CONGERO .II. VOCO frobincate', 'statement'),
     # assignment
     ('apple = "ORANGE";', "apple ^ORANGE^ VALORUM", 'statement'),
     # return
     ('return;', 'REDEO', 'statement'),
     ('return apple;', 'apple REDEO', 'statement'),
     # print int
-    ('printf("%i",1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement"),
-    ('printf("%i",num);', "num NUMERUS.IMPRIMO", "statement"),
+    ('printf("%d", 1234567890);', ".I.II.III.IV.V.VI.VII.VIII.IX.NIL. NUMERUS.IMPRIMO", "statement"),
+    ('printf("%d", num);', "num NUMERUS.IMPRIMO", "statement"),
     # print string
-    ('printf("%s",string);', "string LOCUTIO.IMPRIMO", "statement"),
+    ('printf("%s", string);', "string LOCUTIO.IMPRIMO", "statement"),
+    (r'printf("%s", "\n");', "^+^ LOCUTIO.IMPRIMO", "statement"),
+    (r'printf("%s", "\nGET.READY\n");', '^+GET.READY+^ LOCUTIO.IMPRIMO', "statement"),
     # print bool
     ('printf("%B",bool);', "bool VERITAS.IMPRIMO", "statement"),
-    ('printf("%B",(1<2));', "(.I. INFRA .II.) VERITAS.IMPRIMO", "statement"),
+    ('printf("%B",(1 < 2));', "(.I. INFRA .II.) VERITAS.IMPRIMO", "statement"),
     ('printf("%B",true);', "VERUM VERITAS.IMPRIMO", "statement"),
     # block
-    ('printf("%s",string);\nprintf("%B",bool);', "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO", "block"),
+    ('printf("%s", string);\nprintf("%B",bool);', "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO", "block"),
     ('return;\nvar = "ROMAN";', "REDEO var ^ROMAN^ VALORUM", "block"),
     # while
-    ('while(true){\nprintf("%s",string);\n}', 'VERUM DUM > string LOCUTIO.IMPRIMO <', 'statement'),
-    ('while(1<2){\nwhile(true){\nprintf("%s",string);\n}\n}',
+    ('while(true){\nprintf("%s", string);\n}', 'VERUM DUM > string LOCUTIO.IMPRIMO <', 'statement'),
+    ('while(1 < 2){\nwhile(true){\nprintf("%s", string);\n}\n}',
      '.I. INFRA .II. DUM > VERUM DUM >string LOCUTIO.IMPRIMO< <', 'statement'),
     # if
-    ('if(var<2){\nfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement'),
-    ('if(boolean!=true){\nreturn false;\n}else{\nreturn true;\n}',
+    ('if (var < 2) {\n\tfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement'),
+    ('if (boolean != true) {\n\treturn false;\n} else {\n\treturn true;\n}',
      'boolean NI.IDEM VERUM SI > FALSUM REDEO< ALUID > VERUM REDEO <', 'statement'),
     # nameDef
     ('int apple', 'apple : NUMERUS', 'nameDef'),
@@ -130,19 +132,41 @@ TEST_CASES = [
      , 'varBlock'),
     # body
     ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n\n'  # VarBlock
-     'printf("%s",string);\nprintf("%B",bool);\n',  # block
+     'printf("%s", string);\nprintf("%B",bool);\n',  # block
      'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS'
      "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO",
      'body'),
 
     # main
     ('int apple = 0;\nbool pear = false;\nchar* peach = NULL;\n\n'  # VarBlock
-     'printf("%s",string);\nprintf("%B",bool);\n',  # block
+     'printf("%s", string);\nprintf("%B",bool);\n',  # block
      'apple : NUMERUS MUTABILIS pear : VERITAS MUTABILIS peach : LOCUTIO  MUTABILIS'
      "string LOCUTIO.IMPRIMO bool VERITAS.IMPRIMO",
-     'body')
+     'body'),
     # funcdef
+    ('int displayanddecrement(int count) {\n'
+     'printf("%d", count);\n'
+     'count = count - 1;\n'
+     'if (count == 3) {\n\t'
+     r'printf("%s", "\nGET.READY\n");'
+     '\n} else {\n\t'
+     r'printf("%s",' + ' ' + r'"\n");'
+                             '\n}\n'
+                             'return count;\n'
+                             '}',
+     'APUD count : NUMERUS DEFINITIO displayanddecrement PRAEBET NUMERUS >\n'
+     'count NUMERUS.IMPRIMO\n'
+     'count count SUBTRAHO .I. VALORUM\n'
+     'count IDEM .III. SI >\n'
+     '^+GET.READY+^ LOCUTIO.IMPRIMO\n'
+     '< ALUID >\n'
+     '^+^ LOCUTIO.IMPRIMO\n'
+     '<\n'
+     'count REDEO\n'
+     '<\n'
+     , "funcDef")
     # script
+
 ]
 
 

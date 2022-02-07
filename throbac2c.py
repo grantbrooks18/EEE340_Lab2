@@ -52,7 +52,33 @@ class Throbac2CTranslator(ThrobacListener):
         pass
 
     def exitFuncDef(self, ctx: ThrobacParser.FuncDefContext):
-        pass
+        tempstring = ""
+
+        functype = ctx.TYPE().symbol.text
+        # Add leading variable
+        if "NUMERUS" in functype:
+            tempstring += "int "
+
+        elif "VERITAS" in functype:
+            tempstring += "bool "
+
+        elif "LOCUTIO" in functype:
+            tempstring += "char* "
+
+        else:
+            tempstring += "void "
+
+        tempstring += ctx.ID().symbol.text + "("  # Add the function Name
+        temptemp = []
+        for variables in ctx.nameDef():
+            temptemp.append(variables.c)
+
+        string = ', '.join([str(statements) for statements in temptemp])
+        tempstring += string + ") {"
+
+        tempstring += ctx.body().c + "}"
+
+        ctx.c = tempstring
 
     def exitMain(self, ctx: ThrobacParser.MainContext):
         ctx.c = ctx.expr().c
@@ -65,10 +91,8 @@ class Throbac2CTranslator(ThrobacListener):
 
         ctx.c = tempstring
 
-        pass
-
     def exitVarDec(self, ctx: ThrobacParser.VarDecContext):
-        testtext = ctx.children[0].c
+        testtext = ctx.nameDef().c  #This
         if "int" in testtext:
             ctx.c = testtext + ' = 0;'
 
@@ -79,7 +103,7 @@ class Throbac2CTranslator(ThrobacListener):
             ctx.c = testtext + ' = NULL;'
 
     def exitNameDef(self, ctx: ThrobacParser.NameDefContext):
-        testtext = ctx.getText();
+        testtext = ctx.getText()
         if "NUMERUS" in testtext:
             ctx.c = "int "
 
@@ -97,8 +121,8 @@ class Throbac2CTranslator(ThrobacListener):
     def exitVarBlock(self, ctx: ThrobacParser.VarBlockContext):
         tempstring = ""
 
-        for child in ctx.children:
-            tempstring = tempstring + child.c + "\n"
+        for var in ctx.varDec():  # This handles one or more children
+            tempstring = tempstring + var.c + "\n"
 
         ctx.c = tempstring
 
@@ -111,11 +135,7 @@ class Throbac2CTranslator(ThrobacListener):
         ctx.c = string
 
     def exitAssignment(self, ctx: ThrobacParser.AssignmentContext):
-        testtext = ctx.getText()
-        # print(testtext)
-        testtext = testtext.split("^", 1)
-        # print(testtext[0])
-        ctx.c = testtext[0] + ' = ' + ctx.expr().c + ';'
+        ctx.c = ctx.ID().symbol.text + ' = ' + ctx.expr().c + ';'
         pass
 
     def exitWhile(self, ctx: ThrobacParser.WhileContext):
@@ -123,19 +143,23 @@ class Throbac2CTranslator(ThrobacListener):
 
     def exitIf(self, ctx: ThrobacParser.IfContext):
         text = ctx.getText()
-        ctx.c = 'if(' + ctx.expr().c + '){\n' + ctx.block(0).c + '\n}'
+        ctx.c = 'if (' + ctx.expr().c + ') {\n\t' + ctx.block(0).c + '\n}'
         if 'ALUID' in text:
-            ctx.c = ctx.c + 'else{\n' + ctx.block(1).c + '\n}'
+            ctx.c = ctx.c + ' else {\n\t' + ctx.block(1).c + '\n}'
 
     def exitPrintNumber(self, ctx: ThrobacParser.PrintNumberContext):
         testtext = ctx.getText()
         if "NUMERUS" in testtext:
             testtext = testtext.split()
-            ctx.c = 'printf("%i",' + ctx.expr().c + ");"
+            ctx.c = 'printf("%d", ' + ctx.expr().c + ");"
 
     def exitPrintString(self, ctx: ThrobacParser.PrintStringContext):
         var_name = ctx.expr().c
-        ctx.c = 'printf("%s",'+var_name+');'
+        # if var_name == '"\\n"':
+        #     ctx.c = r'printf("%s", "\n");'
+        # else:
+        temp = 'printf("%s", ' + var_name + ');'
+        ctx.c = temp
 
     def exitPrintBool(self, ctx: ThrobacParser.PrintBoolContext):
         expr = ctx.expr().c
@@ -173,12 +197,12 @@ class Throbac2CTranslator(ThrobacListener):
         throbac_compare = ctx.op.text
 
         compare_mapping = {
-            'IDEM': '==',
-            'NI.IDEM': '!=',
-            'INFRA':  '<',
-            'INFRA.IDEM': '<=',
-            'SUPRA': '>',
-            'SUPRA.IDEM': '>='
+            'IDEM': ' == ',
+            'NI.IDEM': ' != ',
+            'INFRA': ' < ',
+            'INFRA.IDEM': ' <= ',
+            'SUPRA': ' > ',
+            'SUPRA.IDEM': ' >= '
         }
 
         ctx.c = ctx.expr(0).c + compare_mapping[throbac_compare] + ctx.expr(1).c
@@ -204,10 +228,10 @@ class Throbac2CTranslator(ThrobacListener):
         equation = ctx.getText();
 
         if "ADDO" in equation:
-            ctx.c = ctx.expr(0).c + '+' + ctx.expr(1).c #+ ';' #should there be a comma at the end?
+            ctx.c = ctx.expr(0).c + ' + ' + ctx.expr(1).c  #+ ';' #should there be a comma at the end?
 
         elif "SUBTRAHO" in equation:
-            ctx.c = ctx.expr(0).c + '-' + ctx.expr(1).c #+ ';' #should there be a comma at the end?
+            ctx.c = ctx.expr(0).c + ' - ' + ctx.expr(1).c  #+ ';' #should there be a comma at the end?
 
     def exitFuncCallExpr(self, ctx: ThrobacParser.FuncCallExprContext):
         ctx.c = ctx.children[0].c
@@ -218,10 +242,10 @@ class Throbac2CTranslator(ThrobacListener):
         equation = ctx.getText()
 
         if "CONGERO" in equation:
-            ctx.c = ctx.expr(0).c + '*' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
+            ctx.c = ctx.expr(0).c + ' * ' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
 
         elif "PARTIO" in equation:
-            ctx.c = ctx.expr(0).c + '/' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
+            ctx.c = ctx.expr(0).c + ' / ' + ctx.expr(1).c  # + ';' #should there be a comma at the end?
 
     def exitFuncCall(self, ctx: ThrobacParser.FuncCallContext):
         func = ctx.getText()
