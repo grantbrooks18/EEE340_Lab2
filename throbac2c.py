@@ -49,11 +49,17 @@ class Throbac2CTranslator(ThrobacListener):
     # --- TODO: yours to provide (not in this order - see `testcases.py`)
 
     def exitScript(self, ctx: ThrobacParser.ScriptContext):
-        pass
+        tempstring = '#include <stdio.h>\n#include <stdbool.h>\n#include "throbac.h"\n'
+        for functions in ctx.funcDef():
+            tempstring += functions.c + "\n"
+
+        tempstring += ctx.main()
+
+        ctx.c = tempstring
+        return
 
     def exitFuncDef(self, ctx: ThrobacParser.FuncDefContext):
         tempstring = ""
-
         functype = ctx.TYPE().symbol.text
         # Add leading variable
         if "NUMERUS" in functype:
@@ -74,9 +80,11 @@ class Throbac2CTranslator(ThrobacListener):
             temptemp.append(variables.c)
 
         string = ', '.join([str(statements) for statements in temptemp])
-        tempstring += string + ") {"
+        tempstring += string + ")"
 
-        tempstring += ctx.body().c + "}"
+        ctx.header = tempstring + ";"
+
+        tempstring += " {" + ctx.body().c + "}"
 
         ctx.c = tempstring
 
@@ -143,9 +151,9 @@ class Throbac2CTranslator(ThrobacListener):
 
     def exitIf(self, ctx: ThrobacParser.IfContext):
         text = ctx.getText()
-        ctx.c = 'if (' + ctx.expr().c + ') {\n\t' + ctx.block(0).c + '\n}'
+        ctx.c = 'if (' + ctx.expr().c + ') {\n' + ctx.block(0).c + '\n}'
         if 'ALUID' in text:
-            ctx.c = ctx.c + ' else {\n\t' + ctx.block(1).c + '\n}'
+            ctx.c = ctx.c + ' else {\n' + ctx.block(1).c + '\n}'
 
     def exitPrintNumber(self, ctx: ThrobacParser.PrintNumberContext):
         testtext = ctx.getText()

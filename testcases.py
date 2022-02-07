@@ -115,8 +115,8 @@ TEST_CASES = [
     ('while(1 < 2){\nwhile(true){\nprintf("%s", string);\n}\n}',
      '.I. INFRA .II. DUM > VERUM DUM >string LOCUTIO.IMPRIMO< <', 'statement'),
     # if
-    ('if (var < 2) {\n\tfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement'),
-    ('if (boolean != true) {\n\treturn false;\n} else {\n\treturn true;\n}',
+    ('if (var < 2) {\nfrobincate(var);\n}', 'var INFRA .II. SI > APUD var VOCO frobincate <', 'statement'),
+    ('if (boolean != true) {\nreturn false;\n} else {\nreturn true;\n}',
      'boolean NI.IDEM VERUM SI > FALSUM REDEO< ALUID > VERUM REDEO <', 'statement'),
     # nameDef
     ('int apple', 'apple : NUMERUS', 'nameDef'),
@@ -147,9 +147,9 @@ TEST_CASES = [
     ('int displayanddecrement(int count) {\n'
      'printf("%d", count);\n'
      'count = count - 1;\n'
-     'if (count == 3) {\n\t'
+     'if (count == 3) {\n'
      r'printf("%s", "\nGET.READY\n");'
-     '\n} else {\n\t'
+     '\n} else {\n'
      r'printf("%s",' + ' ' + r'"\n");'
                              '\n}\n'
                              'return count;\n'
