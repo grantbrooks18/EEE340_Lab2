@@ -25,9 +25,36 @@ char *__throbac_cat(char *first, char *second) {
 }
 
 int stringlength(char *str) {
-    // TODO: your code here
+    return strlen(str);
 }
 
 char *substring(char* str, int start, int length) {
-    // TODO: your code here
+    if(start<0){
+        printf("\nERROR IN substring()!\nStart is negative.");
+        return 0;
+    }
+    if(length<0){
+        printf("\nERROR IN substring()!\nLength is negative.");
+        return 0;
+    }
+    if(start > strlen(str) - 1){
+        printf("\nERROR IN substring()!\nStart surpasses string size.");
+        return 0;
+    }
+    if(start + length > strlen(str)){
+        printf("\nERROR IN substring()!\nSubstring larger than string.");
+        return 0;
+    }
+
+    size_t size = length + 1;
+    char *sub = malloc(size);
+    if (sub == 0) {
+        abort();
+    }
+
+    for(int i = 0; i < length; i++){
+        sub[i] = str[i+start];
+    }
+
+    return sub;
 }
